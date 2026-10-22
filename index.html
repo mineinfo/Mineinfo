@@ -157,10 +157,11 @@
             <div class="flex justify-between items-center">
                 <div>
                     <h2 class="text-2xl font-bold">Custom Capes</h2>
-                    <p class="text-slate-400 text-sm">Show off your style with exclusive animated and static capes.</p>
+                    <p class="text-slate-400 text-sm">Exclusive custom capes for Minecraft.</p>
                 </div>
             </div>
-            <div id="capes-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6"></div>
+            <div class="flex overflow-x-auto space-x-4 py-3 mb-4 scrollbar-none" id="capeCategoriesBar"></div>
+            <div id="capes-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5"></div>
         </section>
 
         <!-- WIKI TAB -->
@@ -197,18 +198,18 @@
         </div>
     </footer>
 
-    <!-- Skin Modal Popup -->
+    <!-- Asset Modal Popup (Shared for Skins & Capes) -->
     <div id="skinModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 relative space-y-4">
             <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl font-bold">&times;</button>
             <div class="text-center space-y-3">
-                <div class="w-32 h-32 bg-slate-950 rounded-2xl mx-auto overflow-hidden border border-slate-800 p-2 flex items-center justify-center">
-                    <img id="modalPreview" src="" alt="Skin Preview" class="max-h-full object-contain">
+                <div class="w-36 h-48 bg-slate-950 rounded-2xl mx-auto overflow-hidden border border-slate-800 p-2 flex items-center justify-center">
+                    <img id="modalPreview" src="" alt="Asset Preview" class="max-h-full object-contain">
                 </div>
-                <h3 id="modalTitle" class="text-xl font-bold text-white">Skin Title</h3>
-                <p class="text-xs text-slate-400">Download skin file or preview image directly below.</p>
+                <h3 id="modalTitle" class="text-xl font-bold text-white">Item Title</h3>
+                <p class="text-xs text-slate-400">Download texture file or preview image directly below.</p>
                 <div class="grid grid-cols-2 gap-3 pt-2">
-                    <button id="downloadSkinBtn" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2.5 rounded-xl transition-all shadow-lg shadow-emerald-500/20 text-xs">Download Skin (.png)</button>
+                    <button id="downloadSkinBtn" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2.5 rounded-xl transition-all shadow-lg shadow-emerald-500/20 text-xs">Download File (.png)</button>
                     <button id="downloadPreviewBtn" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-xl transition-all text-xs border border-slate-700">Download Preview</button>
                 </div>
             </div>
@@ -220,11 +221,11 @@
         <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 relative space-y-4">
             <button onclick="closeUploadModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl font-bold">&times;</button>
             <h3 class="text-xl font-bold">Submit Your Creation</h3>
-            <p class="text-slate-400 text-xs">Share your skin, texture pack or mod with the community.</p>
+            <p class="text-slate-400 text-xs">Share your skin, texture pack, mod or cape with the community.</p>
             <div class="space-y-3">
                 <div>
                     <label class="text-xs font-semibold text-slate-400">Title / Name</label>
-                    <input type="text" id="up-title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm mt-1 focus:outline-none focus:border-emerald-500" placeholder="e.g. Shadow Assassin Skin">
+                    <input type="text" id="up-title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm mt-1 focus:outline-none focus:border-emerald-500" placeholder="e.g. Shadow Assassin">
                 </div>
                 <div>
                     <label class="text-xs font-semibold text-slate-400">Category</label>
@@ -246,12 +247,27 @@
 
     <script>
         function formatCount(n) { return n >= 1000 ? (n/1000).toFixed(1) + 'k' : n; } 
-        function incrementCount(index) { db.skins[index].downloads = parseInt(db.skins[index].downloads || 0) + 1; } 
+        function incrementCount(type, index) { 
+            if(db[type] && db[type][index]) {
+                db[type][index].downloads = parseInt(db[type][index].downloads || 0) + 1; 
+            }
+        } 
         
         const db = {
            "skins": [
                 { id: 1, title: "ARBAB_PLAYZ", categories: ["Boy", "White", "Royal", "YouTuber", "Cool", "Cute"], author: "ARBAB_PLAYZ", downloads: 0, skinFile: "skin_arbab.png", image: "preview_arbab.jpg" },
                 { id: 2, title: "Lapii", categories: ["Girl", "Cute", "Long hair"], author: "Community", downloads: 0, skinFile: "skin_lapii.png", image: "image_lapii_preview.png" }
+            ],
+            "capes": [
+                { 
+                    id: 301, 
+                    title: "Custom Cape", 
+                    categories: ["Trending", "Minecraft", "White", "Black", "Cool", "Dark", "Simple"], 
+                    author: "ARBAB_PLAYZ", 
+                    downloads: 0, 
+                    skinFile: "cape_1.png", 
+                    image: "preview_cape_1.png" 
+                }
             ],
             "texture-packs": [
                 { id: 101, title: "MakeUp - Ultra Fast", type: "shaders", author: "KDXavier", downloads: "13.1M", link: "https://modrinth.com/shader/makeup-ultra-fast-shaders", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwoKgBozhZJBn1GTCW5w5UrS4EHbJ1gRXl-8apGUpoag&s=10", resolution: "Shaders" },
@@ -339,9 +355,6 @@
                     link: "https://modrinth.com/mod/statuseffecttimer" 
                 }
             ],
-            "capes": [
-                { id: 301, title: "Dragon Wings Cape", rarity: "Legendary", author: "NexusTeam", downloads: "45k", image: "https://placehold.co/300x350/1e293b/ffffff?text=Cape" }
-            ],
             "potions": [
                 { name: "Potion of Swiftness", ingredients: "Nether Wart + Sugar", effect: "+20% Speed for 3 mins", type: "Buff" },
                 { name: "Potion of Healing II", ingredients: "Glistering Melon + Glowstone", effect: "Instant Health Restore", type: "Healing" },
@@ -419,15 +432,6 @@
 
         function renderAll() {
             renderMods();
-
-            // Capes
-            document.getElementById('capes-grid').innerHTML = db.capes.map(item => `
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden group hover:border-emerald-500/40 transition-all text-center p-4">
-                    <img src="${item.image}" alt="${item.title}" class="w-full h-56 object-cover rounded-xl mb-3 group-hover:scale-105 transition-transform duration-300">
-                    <h3 class="font-bold text-base mb-1">${item.title}</h3>
-                    <p class="text-xs text-emerald-400 font-semibold mb-2">${item.rarity}</p>
-                </div>
-            `).join('');
 
             // Potions Wiki
             document.getElementById('potions-container').innerHTML = db.potions.map(p => `
@@ -508,6 +512,7 @@
             closeUploadModal();
         }
 
+        // --- SKINS SECTION ---
         const categoriesList = [
           "Boy", "Girl", "Royal", "YouTuber", "Cool", "Suit", "Mask", "Cute", 
           "Game", "Glasses", "Long hair", "Animal", "White", "Black", "Red", 
@@ -521,7 +526,6 @@
           if (!bar) return;
           
           bar.innerHTML = '';
-          
           const allCount = db.skins.length;
           bar.innerHTML += `
             <button onclick="filterSkins('All')" class="flex flex-col items-center justify-center p-2 min-w-[75px] rounded-xl ${currentCategory === 'All' ? 'bg-slate-800 text-white border border-slate-700' : 'hover:bg-slate-800/50 text-slate-400'} transition cursor-pointer">
@@ -559,7 +563,7 @@
             return;
           }
           grid.innerHTML = filteredSkins.map((item, index) => `
-               <div onclick="openModal('${item.title}', '${item.skinFile}', '${item.image}', ${index})" class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden group hover:border-emerald-500/40 transition cursor-pointer">
+               <div onclick="openModal('${item.title}', '${item.skinFile}', '${item.image}', 'skins', ${index})" class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden group hover:border-emerald-500/40 transition cursor-pointer">
                     <img src="${item.image}" alt="${item.title}" class="w-full h-64 object-cover group-hover:scale-105 transition duration-300">
                     <div class="p-4 space-y-2">
                         <div class="flex justify-between items-start">
@@ -572,7 +576,75 @@
           `).join('');
         }
 
-        function openModal(title, skinFile, previewImg, index) {
+
+        // --- CAPES SECTION ---
+        const capeCategoriesList = [
+          "Trending", "Minecraft", "Youtuber", "Simple", "Blue", "Black", 
+          "White", "Grey", "Red", "Pink", "Yellow", "Orange", "Green", 
+          "Gold Brown", "Cool", "Bright", "Dark"
+        ];
+
+        let currentCapeCategory = "All";
+
+        function renderCapeCategoriesBar() {
+          const bar = document.getElementById('capeCategoriesBar');
+          if (!bar) return;
+          
+          bar.innerHTML = '';
+          const allCount = db.capes.length;
+          bar.innerHTML += `
+            <button onclick="filterCapes('All')" class="flex flex-col items-center justify-center p-2 min-w-[75px] rounded-xl ${currentCapeCategory === 'All' ? 'bg-slate-800 text-white border border-slate-700' : 'hover:bg-slate-800/50 text-slate-400'} transition cursor-pointer">
+              <span class="text-xs font-medium">All</span>
+              <span class="text-[10px] text-slate-500 mt-0.5">${allCount}</span>
+            </button>
+          `;
+
+          capeCategoriesList.forEach(cat => {
+            const count = db.capes.filter(cape => cape.category === cat || (cape.categories && cape.categories.includes(cat))).length;
+            const isActive = currentCapeCategory === cat;
+            
+            bar.innerHTML += `
+              <button onclick="filterCapes('${cat}')" class="flex flex-col items-center justify-center p-2 min-w-[75px] rounded-xl ${isActive ? 'bg-slate-800 text-white border border-slate-700' : 'hover:bg-slate-800/50 text-slate-400'} transition cursor-pointer">
+                <span class="text-xs font-medium">${cat}</span>
+                <span class="text-[10px] text-slate-500 mt-0.5">${count}</span>
+              </button>
+            `;
+          });
+        }
+
+        function filterCapes(cat) {
+          currentCapeCategory = cat;
+          renderCapeCategoriesBar();
+          
+          const grid = document.getElementById('capes-grid');
+          if (!grid) return;
+          
+          const filteredCapes = cat === 'All' 
+            ? db.capes 
+            : db.capes.filter(cape => cape.category === cat || (cape.categories && cape.categories.includes(cat)));
+            
+          if (filteredCapes.length === 0) {
+            grid.innerHTML = `<div class="col-span-full text-center py-8 text-slate-500 text-sm">No capes found in this category yet.</div>`;
+            return;
+          }
+          grid.innerHTML = filteredCapes.map((item, index) => `
+               <div onclick="openModal('${item.title}', '${item.skinFile}', '${item.image}', 'capes', ${index})" class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden group hover:border-emerald-500/40 transition cursor-pointer p-3 space-y-2 flex flex-col justify-between">
+                    <div class="bg-slate-950 rounded-xl overflow-hidden p-2 h-44 flex items-center justify-center border border-slate-800/60">
+                        <img src="${item.image}" alt="${item.title}" class="max-h-full max-w-full object-contain group-hover:scale-110 transition duration-300">
+                    </div>
+                    <div class="space-y-1">
+                        <h3 class="font-bold text-sm text-white truncate">${item.title}</h3>
+                        <p class="text-xs text-slate-400 truncate">By ${item.author}</p>
+                        <div class="flex items-center justify-between pt-1 border-t border-slate-800/60 text-[11px] text-slate-400">
+                            <span>📥 ${item.downloads} downloads</span>
+                        </div>
+                    </div>
+                </div>
+          `).join('');
+        }
+
+        // --- COMMON MODAL & DOWNLOAD ---
+        function openModal(title, skinFile, previewImg, type, index) {
             const modal = document.getElementById('skinModal');
             if (!modal) return;
             
@@ -582,8 +654,8 @@
             const skinBtn = document.getElementById('downloadSkinBtn');
             const previewBtn = document.getElementById('downloadPreviewBtn');
             
-            if (skinBtn) skinBtn.onclick = () => downloadSkin(skinFile, `${title}_skin.png`, index);
-            if (previewBtn) previewBtn.onclick = () => downloadSkin(previewImg, `${title}_preview.png`, index);
+            if (skinBtn) skinBtn.onclick = () => downloadAsset(skinFile, `${title}_file.png`, type, index);
+            if (previewBtn) previewBtn.onclick = () => downloadAsset(previewImg, `${title}_preview.png`, type, index);
             
             modal.classList.remove('hidden');
             modal.classList.add('flex');
@@ -597,8 +669,8 @@
             }
         }
 
-        function downloadSkin(url, filename, index) {
-            incrementCount(index);
+        function downloadAsset(url, filename, type, index) {
+            incrementCount(type, index);
             const a = document.createElement('a');
             a.href = url;
             a.download = filename;
@@ -606,12 +678,15 @@
             a.click();
             document.body.removeChild(a);
             
-            filterSkins(currentCategory);
+            if(type === 'skins') filterSkins(currentCategory);
+            if(type === 'capes') filterCapes(currentCapeCategory);
         }
 
         // Initial Load
         renderCategoriesBar(); 
         filterSkins('All');
+        renderCapeCategoriesBar();
+        filterCapes('All');
         filterPacks('all');
         renderAll();
     </script>
